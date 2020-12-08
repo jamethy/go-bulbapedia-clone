@@ -12,7 +12,7 @@ type (
 )
 
 func CreateInputWithProps(props InputProps) Input {
-	b := Input{Entity{Obj: CreateElement("input")}}
+	b := Input{CreateTag("input")}
 	b.SetProps(props)
 	return b
 }

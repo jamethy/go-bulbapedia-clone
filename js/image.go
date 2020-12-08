@@ -11,7 +11,7 @@ type (
 )
 
 func CreateImageWithProps(props ImageProps) Image {
-	b := Image{Entity{Obj: CreateElement("img")}}
+	b := Image{CreateTag("img")}
 	b.SetProps(props)
 	return b
 }

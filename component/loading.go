@@ -46,3 +46,7 @@ func (l *LoadingContainer) Start(ctx context.Context) {
 		}
 	}()
 }
+
+func (l *LoadingContainer) SetContainerProps(props js.TagProps) {
+	l.SetProps(props)
+}

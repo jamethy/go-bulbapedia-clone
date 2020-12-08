@@ -13,10 +13,13 @@ type (
 	Router struct {
 		routes     map[string]PageFunc
 		routeRegex map[string]*regexp.Regexp
+		Parent     Entity
 	}
 )
 
-var GlobalRouter = Router{}
+var GlobalRouter = Router{
+	Parent: Body,
+}
 
 // GetCurrentRoute gets the location of the current page minus the host
 func GetCurrentRoute() string {
@@ -52,15 +55,14 @@ func (r *Router) LoadRoute(route string) {
 	page := GlobalRouter.GetPage(route)
 	// todo create wrapper so only inner stuff is loaded
 
-	Body.ClearChildren()
+	r.Parent.ClearChildren()
 	if page != nil {
-		Body.AppendChild(page)
+		r.Parent.AppendChild(page)
 	} else {
 		route = "/not-found"
-		Body.AppendChild(Entity{Obj: CreateTextNode("404 not found")})
+		r.Parent.AppendChild(Entity{Obj: CreateTextNode("404 not found")})
 	}
-	empty := &Object{}
-	Window.Get("history").Call("pushState", empty.raw(), "", route)
+	Window.Get("history").Call("pushState", (&Object{}).raw(), "", route)
 }
 
 func RouteLoader(route string) func() {

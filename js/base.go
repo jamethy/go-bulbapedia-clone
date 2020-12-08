@@ -42,7 +42,7 @@ func (e Entity) GetJSValue() js.Value {
 	return e.Obj
 }
 
-func (e *Entity) SetInnerText(innerText string) {
+func (e *Entity) SetInnerHTML(innerText string) {
 	e.Obj.Set("innerHTML", innerText)
 }
 
@@ -101,9 +101,18 @@ func (r *Object) raw() map[string]interface{} {
 }
 
 // some simple tags
+func CreateTag(tag string) Entity {
+	return Entity{Obj: CreateElement(tag)}
+}
+
+func CreateTagWithProps(tag string, props TagProps) Entity {
+	o := CreateTag(tag)
+	o.SetProps(props)
+	return o
+}
 
 func CreateDiv() Entity {
-	return Entity{Obj: CreateElement("div")}
+	return CreateTag("div")
 }
 
 func CreateDivWithProps(props TagProps) Entity {
@@ -113,5 +122,5 @@ func CreateDivWithProps(props TagProps) Entity {
 }
 
 func CreateBreak() Entity {
-	return Entity{Obj: CreateElement("br")}
+	return CreateTag("br")
 }

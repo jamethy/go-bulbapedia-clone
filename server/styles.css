@@ -17,7 +17,14 @@
 }
 
 .centered-container {
-    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.poke-container {
+    width: 10em;
+    height: 10em;
     display: flex;
     justify-content: center;
     align-items: center;

@@ -15,14 +15,8 @@ type (
 	}
 )
 
-func CreateButton(innerText string) Button {
-	b := Button{Entity{Obj: CreateElement("button")}}
-	b.SetInnerText(innerText)
-	return b
-}
-
 func CreateButtonWithProps(props ButtonProps) Button {
-	b := Button{Entity{Obj: CreateElement("button")}}
+	b := Button{CreateTag("button")}
 	b.SetProps(props)
 	return b
 }
@@ -40,6 +34,6 @@ func (b *Button) SetOnClick(f func()) {
 
 func (b *Button) SetProps(props ButtonProps) {
 	b.Entity.SetProps(props.TagProps)
-	b.SetInnerText(props.InnerText)
+	b.SetInnerHTML(props.InnerText)
 	b.SetOnClick(props.OnClick)
 }

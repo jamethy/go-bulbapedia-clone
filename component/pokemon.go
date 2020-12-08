@@ -19,12 +19,18 @@ func PokemonPage(id int) js.ValueHolder {
 	prevButton := js.CreateButtonWithProps(js.ButtonProps{
 		InnerText: "Prev",
 		OnClick: func() {
+			if id == 1 {
+				id = 152
+			}
 			js.GlobalRouter.LoadRoute(fmt.Sprintf("/pokemon/%d", id-1))
 		},
 	})
 	nextButton := js.CreateButtonWithProps(js.ButtonProps{
 		InnerText: "next",
 		OnClick: func() {
+			if id == 151 {
+				id = 0
+			}
 			js.GlobalRouter.LoadRoute(fmt.Sprintf("/pokemon/%d", id+1))
 		},
 	})
@@ -44,6 +50,9 @@ func LoadPokemonById(id int) js.ValueHolder {
 			return js.Entity{}, err
 		}
 		return CreatePokemon(p), nil
+	})
+	loader.SetProps(js.TagProps{
+		ClassName: "poke-container",
 	})
 	loader.Start(context.Background())
 	return loader

@@ -1,7 +1,5 @@
 package js
 
-import "syscall/js"
-
 type (
 	Text struct {
 		Entity
@@ -14,17 +12,16 @@ type (
 )
 
 func CreateTextWithProps(props TextProps) Text {
-	var obj js.Value
+	t := Text{}
 	if props.Tag == "" {
-		obj = CreateTextNode(props.InnerText)
+		t.Obj = CreateTextNode(props.InnerText)
 	} else {
-		obj = CreateElement(props.Tag)
+		t.Entity = CreateTag(props.Tag)
 	}
-	t := Text{Entity{Obj: obj}}
 	t.SetProps(props)
 	return t
 }
 func (t *Text) SetProps(props TextProps) {
 	t.Entity.SetProps(props.TagProps)
-	t.SetInnerText(props.InnerText)
+	t.SetInnerHTML(props.InnerText)
 }
