@@ -16,6 +16,8 @@ type (
 	}
 )
 
+var GlobalRouter = Router{}
+
 // GetCurrentRoute gets the location of the current page minus the host
 func GetCurrentRoute() string {
 	href := Window.Get("location").Get("href").String()
@@ -44,4 +46,25 @@ func (r *Router) GetPage(currentRoute string) ValueHolder {
 		}
 	}
 	return nil
+}
+
+func (r *Router) LoadRoute(route string) {
+	page := GlobalRouter.GetPage(route)
+	// todo create wrapper so only inner stuff is loaded
+
+	Body.ClearChildren()
+	if page != nil {
+		Body.AppendChild(page)
+	} else {
+		route = "/not-found"
+		Body.AppendChild(Entity{Obj: CreateTextNode("404 not found")})
+	}
+	empty := &Object{}
+	Window.Get("history").Call("pushState", empty.raw(), "", route)
+}
+
+func RouteLoader(route string) func() {
+	return func() {
+		GlobalRouter.LoadRoute(route)
+	}
 }

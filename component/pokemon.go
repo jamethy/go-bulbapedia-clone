@@ -2,6 +2,7 @@ package component
 
 import (
 	"context"
+	"fmt"
 
 	"go-bulbapedia-clone/js"
 	"go-bulbapedia-clone/poke"
@@ -9,12 +10,29 @@ import (
 
 type Pokemon struct {
 	js.Entity
-	// todo link to previous
-	Name js.Text
-	// todo types
-	Image js.Image
-	// todo line break
-	// todo link to next
+}
+
+func PokemonPage(id int) js.ValueHolder {
+	parentDiv := js.CreateDivWithProps(js.TagProps{
+		ClassName: "centered-container",
+	})
+	prevButton := js.CreateButtonWithProps(js.ButtonProps{
+		InnerText: "Prev",
+		OnClick: func() {
+			js.GlobalRouter.LoadRoute(fmt.Sprintf("/pokemon/%d", id-1))
+		},
+	})
+	nextButton := js.CreateButtonWithProps(js.ButtonProps{
+		InnerText: "next",
+		OnClick: func() {
+			js.GlobalRouter.LoadRoute(fmt.Sprintf("/pokemon/%d", id+1))
+		},
+	})
+	parentDiv.AppendChild(prevButton)
+	parentDiv.AppendChild(LoadPokemonById(id))
+	parentDiv.AppendChild(nextButton)
+
+	return parentDiv
 }
 
 // LoadPokemonById creates a centered container that presents the requested pokemon
@@ -28,11 +46,7 @@ func LoadPokemonById(id int) js.ValueHolder {
 		return CreatePokemon(p), nil
 	})
 	loader.Start(context.Background())
-	parentDiv := js.CreateDivWithProps(js.TagProps{
-		ClassName: "centered-container",
-	})
-	parentDiv.AppendChild(loader)
-	return parentDiv
+	return loader
 }
 
 // CreatePokemon creates a pokemon display - just the image with the name above
@@ -56,6 +70,5 @@ func CreatePokemon(p poke.Pokemon) Pokemon {
 	)
 	return Pokemon{
 		Entity: parentDiv,
-		Image:  image,
 	}
 }
