@@ -12,17 +12,7 @@ import (
 // trying to clone https://bulbapedia.bulbagarden.net/wiki/Bulbasaur_(Pok%C3%A9mon)
 func main() {
 
-	// create body
-	content := js.CreateDiv()
-
-	js.Body.ReplaceChildren(
-		createHeader(),
-		content,
-		createFooter(),
-	)
-
 	// set up routes for content
-	js.GlobalRouter.Parent = content
 
 	js.GlobalRouter.AddRouteWithParams("/pokemon/{id:\\d+}", func(m map[string]string) js.ValueHolder {
 		id, _ := strconv.Atoi(m["id"])
@@ -34,8 +24,15 @@ func main() {
 		return component.PokemonPage(1)
 	})
 
-	// this is called on page load
+	js.GlobalRouter.Parent = js.CreateDiv()
 	js.GlobalRouter.LoadRoute(js.GetCurrentRoute())
+
+	// finally create the body
+	js.Body.ReplaceChildren(
+		createHeader(),
+		js.GlobalRouter.Parent,
+		createFooter(),
+	)
 
 	// this keeps lib.wasm running so js functions are still available
 	// not completely clear why necessary
