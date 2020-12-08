@@ -15,7 +15,7 @@ const baseUrl = "https://pokeapi.co/api/v2"
 func GetById(ctx context.Context, id int) (p Pokemon, err error) {
 	url := baseUrl + "/pokemon/" + strconv.Itoa(id)
 
-	time.Sleep(time.Second) // fake wait time to test loading
+	time.Sleep(250 * time.Millisecond) // fake wait time to test loading
 	_, err = ctxhttp.GetJsonWithParams(ctx, http.DefaultClient, url, nil, &p)
 	if err != nil {
 		return p, fmt.Errorf("problem with api: %w", err)
