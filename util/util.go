@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"net/url"
 	"regexp"
 	"runtime/debug"
 	"strings"
@@ -35,7 +36,8 @@ func RouteToRegex(route string) *regexp.Regexp {
 }
 
 func ParseRoute(routeRegex *regexp.Regexp, currentRoute string) (map[string]string, bool) {
-	matches := routeRegex.FindStringSubmatch(currentRoute)
+	routeParts := strings.SplitN(currentRoute, "?", 2)
+	matches := routeRegex.FindStringSubmatch(routeParts[0])
 	if matches == nil {
 		return nil, false
 	}
@@ -44,6 +46,26 @@ func ParseRoute(routeRegex *regexp.Regexp, currentRoute string) (map[string]stri
 	for i, s := range routeRegex.SubexpNames() {
 		if i != 0 {
 			res[s] = matches[i]
+		}
+	}
+
+	if len(routeParts) > 1 {
+		pairs := strings.Split(routeParts[1], "&")
+		for _, p := range pairs {
+			splitPair := strings.Split(p, "=")
+			if len(splitPair) != 2 {
+				res[p] = "true"
+			} else {
+				key, err := url.QueryUnescape(splitPair[0])
+				if err != nil {
+					continue
+				}
+				value, err := url.QueryUnescape(splitPair[1])
+				if err != nil {
+					continue
+				}
+				res[key] = value
+			}
 		}
 	}
 	return res, true

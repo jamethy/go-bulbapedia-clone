@@ -8,7 +8,8 @@ import (
 )
 
 type (
-	PageFunc func(map[string]string) ValueHolder
+	PageFunc       func(map[string]string) ValueHolder
+	SimplePageFunc func() ValueHolder
 
 	Router struct {
 		routes     map[string]PageFunc
@@ -30,15 +31,22 @@ func GetCurrentRoute() string {
 	return "/" + strings.SplitN(href, "/", 4)[3]
 }
 
-// AddRoute add a page for a route
+// AddRouteWithParams add a page for a route
 // route can contain variables with regex, such as /page/my-{variable}/with-id-{id:\\d+}
-func (r *Router) AddRoute(route string, pageFunc PageFunc) {
+func (r *Router) AddRouteWithParams(route string, pageFunc PageFunc) {
 	if r.routes == nil {
 		r.routes = make(map[string]PageFunc)
 		r.routeRegex = make(map[string]*regexp.Regexp)
 	}
 	r.routes[route] = pageFunc
 	r.routeRegex[route] = util.RouteToRegex(route)
+}
+
+// AddRoute without parameters
+func (r *Router) AddRoute(route string, pageFunc SimplePageFunc) {
+	r.AddRouteWithParams(route, func(_ map[string]string) ValueHolder {
+		return pageFunc()
+	})
 }
 
 // GetPage for currentRoute

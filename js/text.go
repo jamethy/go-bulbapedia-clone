@@ -21,6 +21,7 @@ func CreateTextWithProps(props TextProps) Text {
 	t.SetProps(props)
 	return t
 }
+
 func (t *Text) SetProps(props TextProps) {
 	t.Entity.SetProps(props.TagProps)
 	t.SetInnerHTML(props.InnerText)
